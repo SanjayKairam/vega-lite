@@ -4,7 +4,7 @@
 import {Model} from './Model';
 
 import {compileAxis} from './axis';
-import {compileData} from './data';
+import {layout, compileData} from './data';
 import {facetMixins} from './facet';
 import {compileLegends} from './legend';
 import {compileMark} from './mark';
@@ -78,9 +78,9 @@ export function compileRootGroup(model: Model) {
     }
   };
 
-  let referencesLayout = model.has(ROW) || model.has(COLUMN) || (model.has(Y) && model.isOrdinalScale(Y)) || (model.has(X) && model.isOrdinalScale(X));
+  // let referencesLayout = model.has(ROW) || model.has(COLUMN) || (model.has(Y) && model.isOrdinalScale(Y)) || (model.has(X) && model.isOrdinalScale(X));
 
-  if (referencesLayout) {
+  if (layout.def(model)) {
     baseGroup.from = {data: LAYOUT};
   }
 
