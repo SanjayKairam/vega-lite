@@ -65,24 +65,32 @@ export function compileRootGroup(model: Model) {
   const width = model.layout().width;
   const height = model.layout().height;
 
+  let baseGroup:any = {
+    properties: {
+      update: {
+        width: typeof width !== 'number' ?
+               {field: width.field} :
+               {value: width},
+        height: typeof height !== 'number' ?
+                {field: height.field} :
+                {value: height}
+      }
+    }
+  };
+
+  let referencesLayout = model.has(ROW) || model.has(COLUMN) || (model.has(Y) && model.isOrdinalScale(Y)) || (model.has(X) && model.isOrdinalScale(X));
+
+  if (referencesLayout) {
+    baseGroup.from = {data: LAYOUT};
+  }
+
   let rootGroup:any = extend({
       name: spec.name ? spec.name + '-root' : 'root',
       type: 'group',
     },
     spec.description ? {description: spec.description} : {},
-    {
-      from: {data: LAYOUT},
-      properties: {
-        update: {
-          width: typeof width !== 'number' ?
-                 {field: width.field} :
-                 {value: width},
-          height: typeof height !== 'number' ?
-                  {field: height.field} :
-                  {value: height}
-        }
-      }
-    });
+    baseGroup
+  );
 
   const marks = compileMark(model);
 
